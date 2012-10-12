@@ -21,9 +21,9 @@ ReadSilentInput() { echo -ne "$BYellow::$BWhite $*$NColor " && read -se && echo;
 
 # define some functions
 DoMinecraftUpdate() {
-	if [ ! $MCdir == "" ]; then # we might as well check if we have a valid dir i guess
-		mkdir -p $MCdir/bin
-		cd $MCdir/bin
+	if [ ! "$MCdir" == "" ]; then # we might as well check if we have a valid dir i guess
+		mkdir -p "$MCdir/bin"
+		cd "$MCdir/bin"
 
 		StatusInfo "Downloading OS natives..."
 		case "$OS" in
@@ -72,9 +72,9 @@ for ARG in "$@"; do
 		"--force-update")
 			StatusAction "Forcing Minecraft update"; DoMinecraftUpdate;;
 		"--remove-prefs")
-			rm $MCdir/bashcraft-prefs; exit;;
+			rm "$MCdir/bashcraft-prefs"; exit;;
 		"--change-prefs")
-			rm $MCdir/bashcraft-prefs;;
+			rm "$MCdir/bashcraft-prefs";;
 		"--help")
 			PrintHelp; exit;;
 		*)
@@ -83,14 +83,14 @@ for ARG in "$@"; do
 done
 
 # check if minecraft even exists
-if [ ! -f $MCdir/bin/minecraft.jar ]; then
+if [ ! -f "$MCdir/bin/minecraft.jar" ]; then
 	# minecraft.jar doesn't exist, hand off to the updater
 	StatusAction "minecraft.jar doesn't exist, forcing Minecraft update"
 	DoMinecraftUpdate
 fi
 
 # check for authentication details
-if [ ! -f $MCdir/bashcraft-prefs ]; then
+if [ ! -f "$MCdir/bashcraft-prefs" ]; then
 	# we don't have any auth details, so request them
 	StatusQuestion "No Minecraft authentication details found."
 	StatusQuestion "If you don't have a Minecraft account, just press Enter."
@@ -103,19 +103,19 @@ if [ ! -f $MCdir/bashcraft-prefs ]; then
 
 	# save the details
 	StatusAction "Saving preferences..."
-	echo "username=\"$username\"" >  $MCdir/bashcraft-prefs
-	echo "password=\"$password\"" >> $MCdir/bashcraft-prefs
-	echo "MCoptions=\"\""     >> $MCdir/bashcraft-prefs
+	echo "username=\"$username\"" >  "$MCdir/bashcraft-prefs"
+	echo "password=\"$password\"" >> "$MCdir/bashcraft-prefs"
+	echo "MCoptions=\"\""         >> "$MCdir/bashcraft-prefs"
 else
 	# we have auth details, so load them
 	StatusAction "Loading preferences..."
-	source $MCdir/bashcraft-prefs
+	source "$MCdir/bashcraft-prefs"
 fi
 
 MCParams="$username $password $MCoptions"
 
 # do the actual Minecraft launch
-cd $MCdir/bin
+cd "$MCdir/bin"
 java -Xms512M -Xmx1024M  -Xincgc \
     -cp "minecraft.jar:jinput.jar:lwjgl.jar:lwjgl_util.jar" \
     -Dorg.lwjgl.librarypath="$(pwd)/natives" \
