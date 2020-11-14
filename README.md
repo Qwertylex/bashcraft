@@ -54,3 +54,7 @@ bashcraft has had contributions from the following people:
 
 * [Alex](https://github.com/Qwertylex)
 * [Alice Jenkinson](https://github.com/0x52a1) <[0x52a100ff@gmail.com](mailto:0x52a100ff@gmail.com)>
+* [Ohio2](https://github.com/Ohio2)
+Problems
+--------
+Minecraft is crashing with a strange error with something about JVM!

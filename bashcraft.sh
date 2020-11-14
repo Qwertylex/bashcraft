@@ -25,8 +25,7 @@ ReadSilentInput() { echo -ne "$BYellow::$BWhite $*$NColor " && read -se && echo;
 # define some functions
 DoMinecraftUpdate() {
     if [ ! "$MCdir" == "" ]; then # we might as well check if we have a valid dir i guess
-        mkdir -p "$MCdir/bin"
-        cd "$MCdir/bin"
+        cd "$MCdir/versions"
 
         StatusInfo "Downloading OS natives..."
         case "$OS" in
@@ -85,11 +84,11 @@ for ARG in "$@"; do
 done
 
 # check if minecraft even exists
-if [ ! -f "$MCdir/bin/minecraft.jar" ]; then
+#if [ ! -f "$MCdir"/versions/ ]; then
     # minecraft.jar doesn't exist, hand off to the updater
-    StatusAction "minecraft.jar doesn't exist, forcing Minecraft update"
-    DoMinecraftUpdate
-fi
+#    StatusAction "minecraft.jar doesn't exist, forcing Minecraft update"
+#    DoMinecraftUpdate
+#fi
 
 # check for authentication details
 if [ ! -f "$MCdir/bashcraft-prefs" ]; then
@@ -114,10 +113,20 @@ else
     source "$MCdir/bashcraft-prefs"
 fi
 
+
+
+
+
+
+##but first. We need to make a minecraft-sort-of list, so we shall use LS!
+ls $MCdir/versions
+echo 'Any versions?'
+read ver
+
 # do the actual Minecraft launch
-cd "$MCdir/bin"
-java -Xms512M -Xmx1024M  -Xincgc \
-    -cp "minecraft.jar:jinput.jar:lwjgl.jar:lwjgl_util.jar" \
+cd "$MCdir/versions/$ver/"
+java -Xms512M -Xmx4G -XX: -UseAdaptiveSizePolicy -Xmn128 -Xincgc \
+    -cp "$ver.jar:jinput.jar:lwjgl.jar:lwjgl_util.jar" \
     -Dorg.lwjgl.librarypath="$(pwd)/natives" \
     -Dnet.java.games.input.librarypath="$(pwd)/natives" \
     net.minecraft.client.Minecraft $username $password $MCoptions
