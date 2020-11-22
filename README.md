@@ -58,4 +58,5 @@ bashcraft has had contributions from the following people:
 
 Problems
 --------
-Minecraft is crashing with a strange error with something about JVM!
+~~Minecraft is crashing with a strange error with something about JVM!~~
+It cannot load the main class in!
