@@ -1,10 +1,10 @@
 #!/bin/bash
 # bashcraft, a minimal Minecraft launcher and updater
-# crafted by Alex (Qwertylex), Alice Jenkinson (0x52a1) and maybe some more
+# crafted by Alex (Qwertylex), Alice Jenkinson (0x52a1), Maksymilian Sęk (Ohio2) and maybe some more
 # see https://github.com/Qwertylex/bashcraft/blob/master/README.md for details
 # License: This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
 # To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/
-
+MINECRAFT_LWJGL_PATH=~/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.1
 BashCraftVersion="v0.2"
 
 # colors up in this thing
@@ -25,8 +25,7 @@ ReadSilentInput() { echo -ne "$BYellow::$BWhite $*$NColor " && read -se && echo;
 # define some functions
 DoMinecraftUpdate() {
     if [ ! "$MCdir" == "" ]; then # we might as well check if we have a valid dir i guess
-        mkdir -p "$MCdir/bin"
-        cd "$MCdir/bin"
+        cd "$MCdir/versions"
 
         StatusInfo "Downloading OS natives..."
         case "$OS" in
@@ -40,9 +39,9 @@ DoMinecraftUpdate() {
         rm *_natives.jar
 
         StatusInfo "Downloading LWJGL..."
-        curl -s -O http://s3.amazonaws.com/MinecraftDownload/lwjgl.jar
-        curl -s -O http://s3.amazonaws.com/MinecraftDownload/jinput.jar
-        curl -s -O http://s3.amazonaws.com/MinecraftDownload/lwjgl_util.jar
+        curl -s -O https://downloads.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%202.9.3/lwjgl-2.9.3.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fjava-game-lib%2Ffiles%2Flatest%2Fdownload&ts=1606000297
+        #curl -s -O http://s3.amazonaws.com/MinecraftDownload/jinput.jar
+        #curl -s -O http://s3.amazonaws.com/MinecraftDownload/lwjgl_util.jar
 
         StatusInfo "Downloading Minecraft..."
         curl -s -O http://s3.amazonaws.com/MinecraftDownload/minecraft.jar
@@ -85,11 +84,11 @@ for ARG in "$@"; do
 done
 
 # check if minecraft even exists
-if [ ! -f "$MCdir/bin/minecraft.jar" ]; then
+#if [ ! -f "$MCdir"/versions/ ]; then
     # minecraft.jar doesn't exist, hand off to the updater
-    StatusAction "minecraft.jar doesn't exist, forcing Minecraft update"
-    DoMinecraftUpdate
-fi
+#    StatusAction "minecraft.jar doesn't exist, forcing Minecraft update"
+#    DoMinecraftUpdate
+#fi
 
 # check for authentication details
 if [ ! -f "$MCdir/bashcraft-prefs" ]; then
@@ -114,10 +113,20 @@ else
     source "$MCdir/bashcraft-prefs"
 fi
 
+
+
+
+
+
+#but first. We need to make a minecraft-sort-of list, so we shall use LS!
+ls $MCdir/versions
+echo 'What do you want to launch today?'
+read ver
+
 # do the actual Minecraft launch
-cd "$MCdir/bin"
-java -Xms512M -Xmx1024M  -Xincgc \
-    -cp "minecraft.jar:jinput.jar:lwjgl.jar:lwjgl_util.jar" \
-    -Dorg.lwjgl.librarypath="$(pwd)/natives" \
+cd "$MCdir/versions/$ver"
+java -Xms512M -Xmx4G -Xincgc \
+    -cp "$ver.jar:jinput.jar:lwjgl.jar:lwjgl_util.jar" \
+    -Dorg.lwjgl.librarypath="${MINECRAFT_LWJGL_PATH}" \
     -Dnet.java.games.input.librarypath="$(pwd)/natives" \
     net.minecraft.client.Minecraft $username $password $MCoptions
